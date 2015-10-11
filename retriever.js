@@ -16,7 +16,8 @@ var a = [];
 var port = config.PORT || config.RETRIEVER_PORT;
 //create array of numbers from 0 to n
 var count = 0;
-while (a.length < users.length) a.push(a.length + 0);
+if (config.STEAM_USER !== "")
+  while (a.length < users.length) a.push(a.length + 0);
 
 app.use(function(req, res, next) {
     if (config.RETRIEVER_SECRET && config.RETRIEVER_SECRET !== req.query.key) {

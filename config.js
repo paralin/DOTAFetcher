@@ -10,7 +10,7 @@ var defaults = {
     "NODE_ENV": "development",
     "MONGO_URL": "mongodb://localhost/dota",
     "STEAM_API_HOST": "api.steampowered.com",
-    "ROLE": "retreiver" //for specifying a node type
+    "ROLE": "retriever" //for specifying a node type
 };
 //ensure that process.env has all values in defaults, but prefer the process.env value
 for (var key in defaults) {
