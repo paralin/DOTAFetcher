@@ -245,7 +245,7 @@ function sendChatMessage(idx, account_id, msg, cb) {
     account_id = Number(account_id);
     var client = steamObj[idx];
     console.log("sending message \""+msg+"\" to "+account_id);
-    client.steamFriends.sendMessage(convert32To64(account_id), msg);
+    client.steamFriends.sendMessage(convert32To64(account_id).toString(), msg);
     cb(null, {});
 }
 
