@@ -11,7 +11,9 @@ var defaults = {
     "MONGO_URL": "mongodb://localhost/dota",
     "STEAM_API_HOST": "api.steampowered.com",
     "ROLE": "retriever", //for specifying a node type
-    "PROFILE_CONFIG": ""
+    "PROFILE_CONFIG": "",
+    "BOT_NAME_PREFIX": "[BOT] "
+    // "NO_GENERATE_RANDOM_NAME": null - set if no generate random name
 };
 //ensure that process.env has all values in defaults, but prefer the process.env value
 for (var key in defaults) {

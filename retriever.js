@@ -104,7 +104,10 @@ async.each(a, function(i, cb) {
         }
         console.log("[STEAM] Logged on %s", client.steamID);
         var chance = new Chance(utility.hashCode(""+client.steamID));
-        client.steamFriends.setPersonaName("[BOT] " + chance.name());
+        var name = process.env.BOT_NAME_PREFIX;
+        if (!process.env.NO_GENERATE_RANDOM_NAME)
+          name += chance.name();
+        client.steamFriends.setPersonaName(name);
         client.replays = 0;
         client.profiles = 0;
         client.Dota2.once("ready", function() {
