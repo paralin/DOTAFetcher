@@ -173,10 +173,13 @@ async.each(a, function(i, cb) {
                 client.steamFriends.addFriend(steamID);
                 accountToIdx[convert64To32(steamID)] = client.steamID;
             }
-            if (relationship === Steam.EFriendRelationship.Ignored || relationship === Steam.EFriendRelationship.IgnoredFriend || relationship === Steam.EFriendRelationship.Blocked || relationship === Steam.EFriendRelationship.None) {
+            if (relationship === Steam.EFriendRelationship.Ignored || relationship === Steam.EFriendRelationship.IgnoredFriend || relationship === Steam.EFriendRelationship.Blocked) {
                 client.steamFriends.setIgnoreFriend(steamID, false, function(res) {
                   console.log(steamID + " was un-ignored.");
                 });
+                delete accountToIdx[convert64To32(steamID)];
+            }
+            if (relationship === Steam.EFriendRelationship.None) {
                 delete accountToIdx[convert64To32(steamID)];
             }
         });
