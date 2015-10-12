@@ -148,6 +148,7 @@ async.each(a, function(i, cb) {
             for (var prop in client.steamFriends.friends) {
                 //iterate through friends and accept requests/populate hash
                 var steamID = prop;
+                var accid = convert64To32(steamID);
                 var relationship = client.steamFriends.friends[prop];
                 //friends that came in while offline
                 if (relationship === Steam.EFriendRelationship.RequestRecipient) {
@@ -158,8 +159,14 @@ async.each(a, function(i, cb) {
                       console.log(steamID + " was un-ignored.");
                     });
                     continue;
-                } else
-                  accountToIdx[convert64To32(steamID)] = client.steamID;
+                } else {
+                  var exista = accountToIdx[accid];
+                  if (exista != null) {
+                    console.log(steamID+" is already friends with "+exista+", removing from "+client.steamID);
+                    client.steamFriends.removeFriend(steamID);
+                  } else
+                    accountToIdx[accid] = client.steamID;
+                }
             }
             console.log("finished searching");
         });
