@@ -278,7 +278,7 @@ function getPlayerSteamProfile(idx, account_id, cb) {
     var steamFriends = steamObj[idx].steamFriends;
     console.log("responding with player steam profile %s", account_id);
     // steamObj[idx].profiles += 1; - this is a steam profile
-    cb(null, steamFriends.personaStates[steam_id]);
+    cb(null, steamFriends.personaStates[steam_id] || {});
 }
 
 function unfriendAccount(idx, account_id, cb) {
