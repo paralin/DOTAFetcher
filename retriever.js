@@ -161,7 +161,6 @@ async.each(a, function(i, cb) {
             //immediately accept incoming friend requests
             if (relationship === Steam.EFriendRelationship.RequestRecipient) {
                 console.log("friend request received");
-                client.steamFriends.addFriend(steamID);
                 var existing = accountToIdx[convert64To32(steamID)];
                 if (existing != null) {
                   console.log("friend request accepted, and friendship on different account removed");
@@ -170,15 +169,13 @@ async.each(a, function(i, cb) {
                   steam.steamFriends.setIgnoreFriend(steamID, false, function(res) {});
                 } else
                   console.log("friend request accepted");
+                client.steamFriends.addFriend(steamID);
                 accountToIdx[convert64To32(steamID)] = client.steamID;
             }
-            if (relationship === Steam.EFriendRelationship.Ignored || relationship === Steam.EFriendRelationship.IgnoredFriend || relationship === Steam.EFriendRelationship.Blocked) {
+            if (relationship === Steam.EFriendRelationship.Ignored || relationship === Steam.EFriendRelationship.IgnoredFriend || relationship === Steam.EFriendRelationship.Blocked || relationship === Steam.EFriendRelationship.None) {
                 client.steamFriends.setIgnoreFriend(steamID, false, function(res) {
                   console.log(steamID + " was un-ignored.");
                 });
-                return;
-            }
-            if (relationship === Steam.EFriendRelationship.None) {
                 delete accountToIdx[convert64To32(steamID)];
             }
         });
