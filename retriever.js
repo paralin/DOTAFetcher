@@ -5,6 +5,7 @@ var utility = require("./utility");
 var async = require('async');
 var convert64To32 = utility.convert64to32;
 var express = require('express');
+var Chance = require('chance');
 var app = express();
 var users = config.STEAM_USER.split(",");
 var passes = config.STEAM_PASS.split(",");
@@ -102,7 +103,8 @@ async.each(a, function(i, cb) {
             return client.steamUser.logOn(logOnDetails);
         }
         console.log("[STEAM] Logged on %s", client.steamID);
-        client.steamFriends.setPersonaName("[YASP] " + client.steamID);
+        var chance = new Chance(utility.hashCode(""+client.steamID));
+        client.steamFriends.setPersonaName("[BOT] " + chance.name());
         client.replays = 0;
         client.profiles = 0;
         client.Dota2.once("ready", function() {
@@ -140,7 +142,13 @@ async.each(a, function(i, cb) {
             if (relationship === Steam.EFriendRelationship.RequestRecipient) {
                 console.log("friend request received");
                 client.steamFriends.addFriend(steamID);
-                console.log("friend request accepted");
+                var existing = accountToIdx[convert64To32(steamID)];
+                if (existing) {
+                  console.log("friend request accepted, and friendship on different account removed");
+                  var steam = steamObj[existing];
+                  steam.steamFriends.removeFriend(steamID);
+                } else
+                  console.log("friend request accepted");
                 accountToIdx[convert64To32(steamID)] = client.steamID;
             }
             if (relationship === Steam.EFriendRelationship.None) {
