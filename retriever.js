@@ -258,7 +258,7 @@ function getPlayerProfile(idx, account_id, cb) {
 function unfriendAccount(idx, account_id, cb) {
     account_id = Number(account_id);
     var client = steamObj[idx];
-    console.log("unfriending account "+account_id);
+    console.log("unfriending account "+account_id+" from bot "+idx);
     client.steamFriends.removeFriend(convert32To64(account_id).toString());
     cb(null, {});
 }
