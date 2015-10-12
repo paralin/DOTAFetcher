@@ -67,8 +67,18 @@ app.get('/', function(req, res, next) {
             return next(err);
         });
     }
+    else if (req.query.account_id && req.query.steam_profile) {
+        var idx = accountToIdx[req.query.account_id];
+        if (idx == null) {
+          return next("Account isn't friended.");
+        }
+        getPlayerSteamProfile(idx, req.query.account_id, function(err, data) {
+            res.locals.data = data;
+            return next(err);
+        });
+    }
     else if (req.query.account_id) {
-        var idx = accountToIdx[req.query.account_id] || r;
+        var idx = accountToIdx[req.query.account_id];
         getPlayerProfile(idx, req.query.account_id, function(err, data) {
             res.locals.data = data;
             return next(err);
@@ -260,6 +270,15 @@ function getPlayerProfile(idx, account_id, cb) {
         //console.log(err, profileData);
         cb(err, profileData.game_account_client);
     });
+}
+
+function getPlayerSteamProfile(idx, account_id, cb) {
+    var steam_id = convert32To64(account_id).toString();
+    account_id = Number(account_id);
+    var steamFriends = steamObj[idx].steamFriends;
+    console.log("responding with player steam profile %s", account_id);
+    // steamObj[idx].profiles += 1; - this is a steam profile
+    cb(null, steamFriends.personaStates[steam_id]);
 }
 
 function unfriendAccount(idx, account_id, cb) {
