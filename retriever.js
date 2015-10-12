@@ -28,20 +28,19 @@ app.use(function(req, res, next) {
     }
 });
 app.get('/', function(req, res, next) {
-    //console.log(process.memoryUsage());
     var keys = Object.keys(steamObj);
-    
+
     if (keys.length == 0) return next("No accounts ready");
-    
+
     var r = keys[Math.floor((Math.random() * keys.length))];
     if (req.query.mmstats) {
         getMMStats(r, function(err, data) {
             res.locals.data = data;
             return next(err);
         });
-    }    
+    }
     else if (req.query.match_id) {
-        getGCReplayUrl(r, req.query.match_id, function(err, data) {
+        getGCMatchDetails(r, req.query.match_id, function(err, data) {
             res.locals.data = data;
             return next(err);
         });
@@ -71,9 +70,9 @@ var server = app.listen(port, function() {
     var host = server.address().address;
     console.log('[RETRIEVER] listening at http://%s:%s', host, port);
 });
-    
+
 async.each(a, function(i, cb) {
-    
+
     var dotaReady = false;
     var relationshipReady = false;
     var client = new Steam.SteamClient();
@@ -166,7 +165,7 @@ async.each(a, function(i, cb) {
 function genStats() {
     var stats = {};
     var numReadyAccounts = Object.keys(steamObj).length
-    
+
     for (var key in steamObj) {
         stats[key] = {
             steamID: key,
@@ -204,10 +203,10 @@ function getPlayerProfile(idx, account_id, cb) {
     });
 }
 
-function getGCReplayUrl(idx, match_id, cb) {
+function getGCMatchDetails(idx, match_id, cb) {
     match_id = Number(match_id);
     var Dota2 = steamObj[idx].Dota2;
-    console.log("[DOTA] requesting replay %s, numusers: %s, requests: %s", match_id, users.length, replayRequests);
+    console.log("[DOTA] requesting details %s, numusers: %s, requests: %s", match_id, users.length, replayRequests);
     replayRequests += 1;
     if (replayRequests >= 500) {
         selfDestruct();
