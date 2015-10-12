@@ -54,7 +54,7 @@ app.get('/', function(req, res, next) {
         });
     }
     else {
-        res.locals.data = genStats();
+        res.locals.data = genStats(req.query.list_friends != null);
         return next();
     }
 });
@@ -170,7 +170,7 @@ async.each(a, function(i, cb) {
     }
 });
 
-function genStats() {
+function genStats(listFriends) {
     var stats = {};
     var numReadyAccounts = Object.keys(steamObj).length
 
@@ -181,6 +181,8 @@ function genStats() {
             profiles: steamObj[key].profiles,
             friends: Object.keys(steamObj[key].steamFriends.friends).length
         };
+        if (listFriends)
+          stats[key].friends_list = steamObj[key].steamFriends.friends;
     }
     var data = {
         replayRequests: replayRequests,
