@@ -148,8 +148,8 @@ async.each(a, function(i, cb) {
                       console.log(steamID + " was un-ignored.");
                     });
                     continue;
-                }
-                accountToIdx[convert64To32(steamID)] = client.steamID;
+                } else
+                  accountToIdx[convert64To32(steamID)] = client.steamID;
             }
             console.log("finished searching");
         });
@@ -160,9 +160,10 @@ async.each(a, function(i, cb) {
         });
         client.steamFriends.on("friend", function(steamID, relationship) {
             //immediately accept incoming friend requests
+            var accid = convert64To32(steamID);
             if (relationship === Steam.EFriendRelationship.RequestRecipient) {
                 console.log("friend request received");
-                var existing = accountToIdx[convert64To32(steamID)];
+                var existing = accountToIdx[accid];
                 if (existing != null) {
                   console.log("friend request accepted, and friendship on different account removed");
                   var steam = steamObj[existing];
@@ -171,16 +172,18 @@ async.each(a, function(i, cb) {
                 } else
                   console.log("friend request accepted");
                 client.steamFriends.addFriend(steamID);
-                accountToIdx[convert64To32(steamID)] = client.steamID;
+                accountToIdx[accid] = client.steamID;
             }
             if (relationship === Steam.EFriendRelationship.Ignored || relationship === Steam.EFriendRelationship.IgnoredFriend || relationship === Steam.EFriendRelationship.Blocked) {
                 client.steamFriends.setIgnoreFriend(steamID, false, function(res) {
                   console.log(steamID + " was un-ignored.");
                 });
-                delete accountToIdx[convert64To32(steamID)];
+                if (accountToIdx[accid] === client.steamID)
+                  delete accountToIdx[accid];
             }
             if (relationship === Steam.EFriendRelationship.None) {
-                delete accountToIdx[convert64To32(steamID)];
+                if (accountToIdx[accid] === client.steamID)
+                  delete accountToIdx[accid];
             }
         });
         client.once('loggedOff', function() {
