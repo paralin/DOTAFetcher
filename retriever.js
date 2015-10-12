@@ -163,7 +163,7 @@ async.each(a, function(i, cb) {
                 console.log("friend request received");
                 client.steamFriends.addFriend(steamID);
                 var existing = accountToIdx[convert64To32(steamID)];
-                if (existing) {
+                if (existing != null) {
                   console.log("friend request accepted, and friendship on different account removed");
                   var steam = steamObj[existing];
                   steam.steamFriends.removeFriend(steamID);
