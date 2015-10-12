@@ -4,6 +4,7 @@ var Dota2 = require("dota2");
 var utility = require("./utility");
 var async = require('async');
 var convert64To32 = utility.convert64to32;
+var convert32To64 = utility.convert32to64;
 var express = require('express');
 var Chance = require('chance');
 var app = express();
@@ -42,6 +43,16 @@ app.get('/', function(req, res, next) {
     }
     else if (req.query.match_id) {
         getGCMatchDetails(r, req.query.match_id, function(err, data) {
+            res.locals.data = data;
+            return next(err);
+        });
+    }
+    else if (req.query.account_id && req.query.send_message) {
+        var idx = accountToIdx[req.query.account_id];
+        if (!idx) {
+          return next("Account isn't friended.");
+        }
+        sendChatMessage(idx, req.query.account_id, req.query.send_message, function(err, data) {
             res.locals.data = data;
             return next(err);
         });
@@ -131,6 +142,11 @@ async.each(a, function(i, cb) {
                 if (relationship === Steam.EFriendRelationship.RequestRecipient) {
                     client.steamFriends.addFriend(steamID);
                     console.log(steamID + " was added as a friend");
+                } else if (relationship === Steam.EFriendRelationship.Ignored || relationship === Steam.EFriendRelationship.IgnoredFriend || relationship === Steam.EFriendRelationship.Blocked) {
+                    client.steamFriends.setIgnoreFriend(steamID, false, function(res) {
+                      console.log(steamID + " was un-ignored.");
+                    });
+                    continue;
                 }
                 accountToIdx[convert64To32(steamID)] = client.steamID;
             }
@@ -151,9 +167,16 @@ async.each(a, function(i, cb) {
                   console.log("friend request accepted, and friendship on different account removed");
                   var steam = steamObj[existing];
                   steam.steamFriends.removeFriend(steamID);
+                  steam.steamFriends.setIgnoreFriend(steamID, false, function(res) {});
                 } else
                   console.log("friend request accepted");
                 accountToIdx[convert64To32(steamID)] = client.steamID;
+            }
+            if (relationship === Steam.EFriendRelationship.Ignored || relationship === Steam.EFriendRelationship.IgnoredFriend || relationship === Steam.EFriendRelationship.Blocked) {
+                client.steamFriends.setIgnoreFriend(steamID, false, function(res) {
+                  console.log(steamID + " was un-ignored.");
+                });
+                return;
             }
             if (relationship === Steam.EFriendRelationship.None) {
                 delete accountToIdx[convert64To32(steamID)];
@@ -216,6 +239,14 @@ function getPlayerProfile(idx, account_id, cb) {
         //console.log(err, profileData);
         cb(err, profileData.game_account_client);
     });
+}
+
+function sendChatMessage(idx, account_id, msg, cb) {
+    account_id = Number(account_id);
+    var client = steamObj[idx];
+    console.log("sending message \""+msg+"\" to "+account_id);
+    client.steamFriends.sendMessage(convert32To64(account_id), msg);
+    cb(null, {});
 }
 
 function getGCMatchDetails(idx, match_id, cb) {
