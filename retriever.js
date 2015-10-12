@@ -110,6 +110,7 @@ async.each(a, function(i, cb) {
         client.steamFriends.setPersonaName(name);
         client.replays = 0;
         client.profiles = 0;
+        client.name = name;
         client.Dota2.once("ready", function() {
             //console.log("Dota 2 ready");
             steamObj[client.steamID] = client;
@@ -182,6 +183,7 @@ function genStats(listFriends) {
             steamID: key,
             replays: steamObj[key].replays,
             profiles: steamObj[key].profiles,
+            name: steamObj[key].name,
             friends: Object.keys(steamObj[key].steamFriends.friends).length
         };
         if (listFriends)
