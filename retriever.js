@@ -49,7 +49,7 @@ app.get('/', function(req, res, next) {
     }
     else if (req.query.account_id && req.query.send_message) {
         var idx = accountToIdx[req.query.account_id];
-        if (!idx) {
+        if (idx == null) {
           return next("Account isn't friended.");
         }
         sendChatMessage(idx, req.query.account_id, req.query.send_message, function(err, data) {
