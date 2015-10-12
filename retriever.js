@@ -119,6 +119,7 @@ async.each(a, function(i, cb) {
         if (!process.env.NO_GENERATE_RANDOM_NAME)
           name += chance.name();
         client.steamFriends.setPersonaName(name);
+        client.steamFriends.setPersonaState(Steam.EPersonaState.Online);
         client.replays = 0;
         client.profiles = 0;
         client.name = name;
