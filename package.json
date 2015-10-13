@@ -24,6 +24,7 @@
     "http-proxy": "^1.11.2",
     "monk": "1.0.1",
     "ndjson": "^1.4.2",
+    "newrelic": "^1.22.1",
     "numeral": "^1.5.3",
     "request": "~2.64.0",
     "request-progress": "^0.3.1",
