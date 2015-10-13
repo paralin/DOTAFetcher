@@ -78,7 +78,7 @@ app.get('/', function(req, res, next) {
         });
     }
     else if (req.query.account_id) {
-        var idx = accountToIdx[req.query.account_id];
+        var idx = accountToIdx[req.query.account_id] || r;
         getPlayerProfile(idx, req.query.account_id, function(err, data) {
             res.locals.data = data;
             return next(err);
