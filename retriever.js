@@ -104,6 +104,7 @@ var server = app.listen(port, function() {
 });
 
 async.each(a, function(i, cb) {
+    var cbCalled = false;
 
     var dotaReady = false;
     var relationshipReady = false;
@@ -223,7 +224,10 @@ async.each(a, function(i, cb) {
         if (dotaReady && relationshipReady) {
             count += 1;
             console.log("acct %s ready, %s/%s", i, count, users.length);
-            cb();
+            if (!cbCalled) {
+                cbCalled = true;
+                cb();
+            }
         }
     }
 });
