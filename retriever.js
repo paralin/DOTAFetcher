@@ -222,11 +222,13 @@ async.each(a, function(i, cb) {
 
     function allDone() {
         if (dotaReady && relationshipReady) {
-            count += 1;
-            console.log("acct %s ready, %s/%s", i, count, users.length);
             if (!cbCalled) {
+                count += 1;
+                console.log("acct %s ready, %s/%s", i, count, users.length);
                 cbCalled = true;
                 cb();
+            } else {
+                console.log("acct %s reconnected, out of %s", i, count, users.length);
             }
         }
     }
