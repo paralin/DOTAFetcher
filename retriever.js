@@ -267,14 +267,41 @@ function getMMStats(idx, cb) {
     });
 }
 
-function getPlayerProfile(idx, account_id, cb) {
+function getPlayerProfile(idx, account_id, cb)
+{
     account_id = Number(account_id);
     var Dota2 = steamObj[idx].Dota2;
     console.log("requesting player profile %s", account_id);
     steamObj[idx].profiles += 1;
-    Dota2.profileRequest(account_id, false, function(err, profileData) {
-        //console.log(err, profileData);
-        cb(err, profileData.game_account_client);
+    Dota2.requestProfileCard(account_id, function(err, profileData)
+    {
+        /*
+     	enum EStatID {
+		k_eStat_SoloRank = 1;
+		k_eStat_PartyRank = 2;
+		k_eStat_Wins = 3;
+		k_eStat_Commends = 4;
+		k_eStat_GamesPlayed = 5;
+		k_eStat_FirstMatchDate = 6;
+    	}
+    	*/
+        if (err)
+        {
+            return cb(err);
+        }
+        var response = {};
+        profileData.slots.forEach(function(s)
+        {
+            if (s.stat && s.stat.stat_id === 1)
+            {
+                response.solo_competitive_rank = s.stat.stat_score;
+            }
+            if (s.stat && s.stat.stat_id === 2)
+            {
+                response.competitive_rank = s.stat.stat_score;
+            }
+        });
+        cb(err, response);
     });
 }
 
