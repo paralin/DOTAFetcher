@@ -247,16 +247,16 @@ function getPlayerProfile(idx, account_id, cb)
         {
             return cb(err);
         }
-        var response = {};
+        var response = {formatted: {}, data: profileData};
         profileData.slots.forEach(function(s)
         {
             if (s.stat && s.stat.stat_id === 1)
             {
-                response.solo_competitive_rank = s.stat.stat_score;
+                response.formatted.solo_competitive_rank = s.stat.stat_score;
             }
             if (s.stat && s.stat.stat_id === 2)
             {
-                response.competitive_rank = s.stat.stat_score;
+                response.formatted.competitive_rank = s.stat.stat_score;
             }
         });
         cb(err, response);
