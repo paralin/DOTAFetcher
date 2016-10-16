@@ -14,7 +14,7 @@
     "url": "http://github.com/yasp-dota/yasp"
   },
   "dependencies": {
-    "async": "2.1.1",
+    "async": "2.1.2",
     "big-number": "0.4.0",
     "chance": "^1.0.4",
     "dota2": "~4.0.0",
