@@ -16,7 +16,7 @@
   "dependencies": {
     "async": "2.1.5",
     "big-number": "0.4.0",
-    "chance": "^1.0.4",
+    "chance": "^1.0.6",
     "dota2": "~4.1.0",
     "dotenv": "^2.0.0",
     "express": "^4.13.3",
